@@ -1,4 +1,4 @@
-var contentEL = document.querySelector("#content");
+var contentEL = $("#content");
 var timerEL = document.querySelector("#timer");
 var questions = 
 [
@@ -20,6 +20,9 @@ var questions =
 ];
 var questionNum = 0;
 var timer;
+var timerCount;
+var startBTN;
+var answers;
 
 
 function clearContent() {
@@ -33,39 +36,44 @@ function init() {
 
     var quizStart = document.createElement("h1");
     quizStart.textContent = "Start Quiz";
-    contentEL.appendChild(quizStart);
+    contentEL.append(quizStart);
 
     var quizDirections = document.createElement("p");
     quizDirections.textContent = "Select correct answers before timer runs out. If you get one wrong minus 10 sec. Good luck";
-    contentEL.appendChild(quizDirections);
+    contentEL.append(quizDirections);
 
     var quizButton = document.createElement("button");
     quizButton.textContent = "Start";
-    contentEL.appendChild(quizButton);
+    contentEL.append(quizButton);
+    startBTN = quizButton;
   }
 
   function quizQuestion(){
     clearContent();
 
-    var questionText = document.createElement("h1");
-    var questionAnswers = document.createElement("ul");
+    var questionText = $("<h1>");
+    var questionAnswers = $("<ul>");
+    
 
-    questionText.textContent=(questions[questionNum].question);
+    questionText.text((questions[questionNum].question));
     
     for (var i = 0; i < questions[questionNum].answerChoices.length; i++){
-        var answerChoice = document.createElement("li");
-        answerChoice.textContent = questions[questionNum].answerChoices[i];
-        questionAnswers.appendChild(answerChoice);
+        var answerChoice = $("<li>");
+        answerChoice.addClass('choice');
+
+        answerChoice.text(questions[questionNum].answerChoices[i]);
+        questionAnswers.append(answerChoice);
     }
 
-    contentEL.appendChild(questionText);
-    contentEL.appendChild(questionAnswers);
+    contentEL.append(questionText);
+    contentEL.append(questionAnswers);
     questionNum++;
+    answers = questionAnswers;
   }
 
   function startTimer() {
     // Sets timer
-    var timerCount = 5;
+    timerCount = 60;
     timer = setInterval(function() {
         timerCount--;
       timerEL.textContent = "Timer: " + timerCount;
@@ -77,8 +85,25 @@ function init() {
     }, 1000);
 }
 
+init();
 
-  init();
-  startTimer()
-  quizQuestion();
-  quizQuestion();
+var startGame = function () {
+    quizQuestion()
+    startTimer();
+};
+  startBTN.addEventListener('click', startGame);
+
+
+var selectAnswer = function (event) {
+    console.log(event.target.textContent);
+    if(event.target.textContent === questions[questionNum-1].answer){
+        console.log("win");
+    }else{
+        console.log("loss");
+        timerCount -= 10;
+    }
+
+    quizQuestion();    
+};
+  
+contentEL.on('click', '.choice', selectAnswer);
