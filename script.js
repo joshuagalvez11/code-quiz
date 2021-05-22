@@ -1,12 +1,25 @@
 var contentEL = document.querySelector("#content");
+var timerEL = document.querySelector("#timer");
 var questions = 
 [
     { 
     question: "Pick one",
     answerChoices: ["1", "2", "3", "4"],
     answer: "1"
+    },
+    {
+        question: "Pick two",
+        answerChoices: ["1", "2", "3", "4"],
+        answer: "2"
+    },
+    {
+        question: "Pick three",
+        answerChoices: ["1", "2", "3", "4"],
+        answer: "3"
     }
 ];
+var questionNum = 0;
+var timer;
 
 
 function clearContent() {
@@ -16,7 +29,7 @@ function clearContent() {
   }
 
 function init() {
-    //clearContent();
+    clearContent();
 
     var quizStart = document.createElement("h1");
     quizStart.textContent = "Start Quiz";
@@ -32,9 +45,8 @@ function init() {
   }
 
   function quizQuestion(){
-    //clearContent();
+    clearContent();
 
-    var questionNum = 0;
     var questionText = document.createElement("h1");
     var questionAnswers = document.createElement("ul");
 
@@ -48,8 +60,25 @@ function init() {
 
     contentEL.appendChild(questionText);
     contentEL.appendChild(questionAnswers);
-
+    questionNum++;
   }
 
+  function startTimer() {
+    // Sets timer
+    var timerCount = 5;
+    timer = setInterval(function() {
+        timerCount--;
+      timerEL.textContent = "Timer: " + timerCount;
+      // Tests if time has run out
+      if (timerCount <= 0) {
+        // Clears interval
+        clearInterval(timer);
+      }
+    }, 1000);
+}
+
+
   init();
+  startTimer()
+  quizQuestion();
   quizQuestion();
